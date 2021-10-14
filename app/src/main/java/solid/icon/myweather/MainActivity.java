@@ -10,6 +10,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,17 +39,37 @@ public class MainActivity extends AppCompatActivity {
         IV_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String cityName = TV_city_name.getText().toString().trim();
+                String cityName = ED_city_name.getText().toString().trim();
                 if(cityName.isEmpty()){
-                    //Toasty
+                    make_toast("Field city name is empty");
+                }else {
+                    TV_city_name.setText(cityName);
+                    getWeatherName(cityName);
                 }
             }
         });
     }
 
-    private void getCityName(String cityName){
+    private void getWeatherName(String cityName){
         final String url = "http://api.weatherapi.com/v1/forecast.json?key=b99185c6f87940b28d5112006211310&q=" + cityName +"&days=1&aqi=no&alerts=no";
 
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                make_toast("Pls enter valid city name!");
+            }
+        });
+    }
+
+    private void make_toast(String text){
+        Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
     }
 
     private void init(){
