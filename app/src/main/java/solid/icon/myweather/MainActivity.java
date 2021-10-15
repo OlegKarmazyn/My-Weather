@@ -1,6 +1,7 @@
 package solid.icon.myweather;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView TV_city_name, TV_temperature, TV_condition;
     private EditText ED_city_name;
-    private ImageView IV_condition, IV_background, IV_search;
+    private ImageView IV_condition, IV_background, IV_search, IV_add_city;
     private RecyclerView RV_weather;
     private ArrayList<WeatherModal> weatherModalArrayList;
     private WeatherAdapter weatherAdapter;
@@ -71,6 +73,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        IV_add_city.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String city = ED_city_name.getText().toString().trim();
+                if(!city.isEmpty()) {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Add city")
+                            .setMessage("Are you sure you want to add " + city + "?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    make_toast("City: " + city + " is added");
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    make_toast("Cancel");
+                                }
+                            })
+                            .show();
+                } else {
+                    make_toast("Field city name is empty");
+                }
+            }
+        });
         ifHasConnection(startCity);
     }
 
@@ -82,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         IV_condition = findViewById(R.id.IV_condition);
         IV_background = findViewById(R.id.IV_background);
         IV_search = findViewById(R.id.IV_search);
+        IV_add_city = findViewById(R.id.IV_add_city);
         RV_weather = findViewById(R.id.RV_weather);
         spinner_city = findViewById(R.id.spinner_city);
         weatherModalArrayList = new ArrayList<>();
@@ -102,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void spinner_adapters() {
         String[] city = new String[]{"Kiev", "Dnipropetrovsk"};
-        ArrayAdapter<String> adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, city);
+        ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.spinner_item, city);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_city.setAdapter(adapter);
         AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -115,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("item_select = ", String.valueOf(item_select));
                 Log.e("spinner_item = ", spinner_item);
                 ifHasConnection(spinner_item);
+                RV_weather.scrollToPosition(10);
             }
 
             @Override

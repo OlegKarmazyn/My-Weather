@@ -6,29 +6,66 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/PB_weather"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
-
     <ImageView
         android:id="@+id/IV_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/LL_city_name"
         android:scaleType="centerCrop"
+        android:focusableInTouchMode="false"
+        android:isScrollContainer="false"
         android:src="@color/grayish" />
 
     <LinearLayout
         android:id="@+id/LL_city_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:orientation="vertical">
+        android:background="@color/grayish"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/ED_city_name"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/enter_city_name"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/IV_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_search_24" />
+
+        <Spinner
+            android:id="@+id/spinner_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:layout_marginLeft="5dp" />
+
+        <ImageView
+            android:id="@+id/IV_add_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_add_24" />
+
+    </LinearLayout>
 
         <TextView
             android:id="@+id/TV_city_name"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/LL_city_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -38,49 +75,13 @@
             android:textSize="30sp"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginLeft="10dp"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/ED_city_name"
-                android:layout_width="280dp"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:hint="@string/enter_city_name"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="18sp" />
-
-            <ImageView
-                android:id="@+id/IV_search"
-                android:layout_marginLeft="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_baseline_search_24" />
-
-            <Spinner
-                android:id="@+id/spinner_city"
-                android:layout_marginLeft="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
     <TextView
         android:id="@+id/TV_temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/LL_city_name"
+        android:layout_below="@+id/TV_city_name"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="29"
         android:textColor="@color/white"
         android:textSize="60sp" />
@@ -113,7 +114,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/TV_condition"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="85dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:background="@android:color/transparent"
