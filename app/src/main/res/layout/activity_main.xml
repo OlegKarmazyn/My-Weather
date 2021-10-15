@@ -79,9 +79,9 @@
         android:textSize="60sp" />
 
     <ImageView
-        android:id="@+id/IV_launcher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/IV_condition"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_below="@+id/TV_temperature"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
@@ -91,8 +91,9 @@
         android:id="@+id/TV_condition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/IV_launcher"
-        android:layout_marginTop="20dp"
+        android:layout_below="@+id/IV_condition"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
         android:gravity="center"
         android:text="Condition"
         android:textColor="@color/white" />
