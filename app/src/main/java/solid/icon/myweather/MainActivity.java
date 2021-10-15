@@ -1,6 +1,10 @@
 package solid.icon.myweather;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,8 +45,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         init();
 
-        getWeatherName(startCity);
-        setCityName(startCity);
+        if(hasConnection(this)) {
+            getWeatherName(startCity);
+            setCityName(startCity);
+        } else{
+
+        }
 
         IV_search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,8 +81,28 @@ public class MainActivity extends AppCompatActivity {
         RV_weather.setAdapter(weatherAdapter);
     }
 
+    public static boolean hasConnection(final Context context) {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        return false;
+    }
+
     private void getWeatherName(String cityName){
-        final String url = "http://api.weatherapi.com/v1/forecast.json?key=b99185c6f87940b28d5112006211310&q=" + cityName +"&days=1&aqi=no&alerts=no";
+        final String url = "http://api.weatherapi.com/v1/forecast.json?key=b99185c6f87940b28d5112006211310&q=" + cityName + "&days=1&aqi=no&alerts=no";
         final String urlDayIcon = "https://images.wallpaperscraft.ru/image/single/oblaka_vysota_nebo_solnce_belyy_goluboy_svet_6448_320x480.jpg";
         final String urlNightIcon = "https://images.wallpaperscraft.ru/image/single/noch_luna_nebo_129012_320x480.jpg";
 
@@ -124,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.e("ERROR", error.toString());
                 make_toast("Pls enter valid city name!");
                 TV_city_name.setText("wrong city name");
                 weatherModalArrayList.clear();
