@@ -14,6 +14,9 @@ public interface CitiesListDao {
     @Query("SELECT * FROM CitiesList")
     List<CitiesList> getAll();
 
+    @Query("SELECT * FROM CitiesList WHERE nameCity = :nameCity")
+    List<CitiesList> getAllByCityName(String nameCity);
+
     @Query("SELECT * FROM CitiesList WHERE id = :id")
     CitiesList getById(long id);
 

@@ -27,6 +27,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import solid.icon.myweather.room.AppDatabase;
+import solid.icon.myweather.room.CitiesList;
+import solid.icon.myweather.room.CitiesListDao;
+import solid.icon.myweather.room.RoomHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -79,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         weatherModalArrayList = new ArrayList<>();
         weatherAdapter = new WeatherAdapter(this, weatherModalArrayList);
         RV_weather.setAdapter(weatherAdapter);
+
     }
 
     public static boolean hasConnection(final Context context) {
@@ -147,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+                RoomHelper.toRoomDB(cityName, weatherModalArrayList);
             }
         }, new Response.ErrorListener() {
             @Override
