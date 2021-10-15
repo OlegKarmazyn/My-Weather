@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
                     make_toast("Field city name is empty");
                 }else {
                     getWeatherName(cityName);
+                    setCityName(cityName);
                 }
             }
         });
@@ -78,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 weatherModalArrayList.clear();
-                TV_city_name.setText(cityName);
 
                 try {
                     JSONObject currentJSONObject = response.getJSONObject("current");
@@ -126,6 +127,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         requestQueue.add(jsonObjectRequest);
+    }
+
+    private void setCityName(String cityName){
+        String upCity = "";
+        upCity = cityName.substring(0, 1).toUpperCase() + cityName.substring(1);
+        TV_city_name.setText(upCity);
     }
 
     private void make_toast(String text){
