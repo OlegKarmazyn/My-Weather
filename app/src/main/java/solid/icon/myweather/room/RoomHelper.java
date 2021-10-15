@@ -8,21 +8,15 @@ import solid.icon.myweather.WeatherModal;
 
 public class RoomHelper {
 
+    private static AppDatabase db = App.getInstance().getDatabase();
+    private static final CitiesListDao citiesListDao = db.dayLifeCycleDao();
+
     public RoomHelper() {
     }
 
     public static void toRoomDB(String cityName, ArrayList<WeatherModal> weatherModals){
-        AppDatabase db = App.getInstance().getDatabase();
-        final CitiesListDao citiesListDao = db.dayLifeCycleDao();
-        boolean isCity = false;
         List<CitiesList> citiesListList = citiesListDao.getAll();
-
-        for(CitiesList c : citiesListList){
-            if(c.nameCity.equals(cityName)){
-                isCity = true;
-                break;
-            }
-        }
+        boolean isCity = isCity(cityName, citiesListList);
 
         if(!isCity){
             for(WeatherModal w : weatherModals){
@@ -47,5 +41,33 @@ public class RoomHelper {
                 }
             }
         }
+    }
+
+    public static ArrayList<WeatherModal> getAL_weatherModals(String cityName){
+        List<CitiesList> citiesListList = citiesListDao.getAllByCityName(cityName);
+        boolean isCity = isCity(cityName, citiesListList);
+        ArrayList<WeatherModal> weatherModals = new ArrayList<>();
+        if(!isCity){
+            for(CitiesList citiesList : citiesListList){
+                String time = citiesList.time;
+                String temperature = citiesList.temperature;
+                String wind = citiesList.wind;
+                String icon = citiesList.icon;
+                WeatherModal weatherModal = new WeatherModal(time, temperature, icon, wind);
+                weatherModals.add(weatherModal);
+            }
+        }
+        return weatherModals;
+    }
+
+    private static boolean isCity(String cityName, List<CitiesList> citiesListList){
+        boolean isCity = false;
+        for(CitiesList c : citiesListList){
+            if(c.nameCity.equals(cityName)){
+                isCity = true;
+                break;
+            }
+        }
+        return isCity;
     }
 }
