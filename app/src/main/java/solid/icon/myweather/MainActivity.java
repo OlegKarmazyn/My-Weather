@@ -33,7 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import solid.icon.myweather.room.RoomHelper;
+import solid.icon.myweather.room.CitiesListHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
     private void setWeatherInfo(String cityName){
         weatherModalArrayList.clear();
         IV_background.setImageResource(R.drawable.day_night);
-        weatherModalArrayList = new RoomHelper().getAL_weatherModals(cityName);
+        weatherModalArrayList = new CitiesListHelper().getAL_weatherModals(cityName);
         weatherAdapter = new WeatherAdapter(this, weatherModalArrayList);
         RV_weather.setAdapter(weatherAdapter);
         weatherAdapter.notifyDataSetChanged();
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                new RoomHelper().toRoomDB(cityName, weatherModalArrayList);
+                new CitiesListHelper().toRoomDB(cityName, weatherModalArrayList);
             }
         }, new Response.ErrorListener() {
             @Override

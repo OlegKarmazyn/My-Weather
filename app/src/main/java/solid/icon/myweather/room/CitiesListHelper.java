@@ -8,12 +8,12 @@ import java.util.List;
 import solid.icon.myweather.App;
 import solid.icon.myweather.WeatherModal;
 
-public class RoomHelper {
+public class CitiesListHelper {
 
      AppDatabase db = App.getInstance().getDatabase();
-     final CitiesListDao citiesListDao = db.dayLifeCycleDao();
+     final CitiesListDao citiesListDao = db.citiesListDao();
 
-    public RoomHelper() {
+    public CitiesListHelper() {
     }
 
     public void toRoomDB(String cityName, ArrayList<WeatherModal> weatherModals){
