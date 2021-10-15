@@ -38,13 +38,12 @@ public class RoomHelper {
             citiesListList = citiesListDao.getAllByCityName(cityName);
             for(CitiesList c : citiesListList){
                 for(WeatherModal w : weatherModals){
-                    CitiesList citiesList = new CitiesList();
-                    citiesList.nameCity = cityName;
-                    citiesList.time = w.getTime();
-                    citiesList.temperature = w.getTemperature();
-                    citiesList.wind = w.getWindSpeed();
-                    citiesList.icon = w.getIcon();
-                    citiesListDao.update(citiesList);
+                    c.nameCity = cityName;
+                    c.time = w.getTime();
+                    c.temperature = w.getTemperature();
+                    c.wind = w.getWindSpeed();
+                    c.icon = w.getIcon();
+                    citiesListDao.update(c);
                 }
             }
         }
