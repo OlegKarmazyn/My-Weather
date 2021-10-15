@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        ifHasConnection();
+        ifHasConnection(startCity);
     }
 
     private void init(){
@@ -89,14 +89,14 @@ public class MainActivity extends AppCompatActivity {
         RV_weather.setAdapter(weatherAdapter);
     }
 
-    private void ifHasConnection(){
+    private void ifHasConnection(String cityName){
         if(hasConnection(this)) {
             Log.e("connection", "= yes");
-            getWeatherName(startCity);
-            setCityName(startCity);
+            getWeatherName(cityName);
+            setCityName(cityName);
         } else{
             Log.e("connection", "= no");
-            setWeatherInfo(startCity);
+            setWeatherInfo(cityName);
         }
     }
 
@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 item_select = position;
                 Log.e("item_select = ", String.valueOf(item_select));
                 Log.e("spinner_item = ", spinner_item);
+                ifHasConnection(spinner_item);
             }
 
             @Override
