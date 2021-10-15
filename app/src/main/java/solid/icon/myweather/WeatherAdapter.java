@@ -41,7 +41,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
         holder.TV_temperature.setText(weatherModal.getTemperature().concat("℃"));
         holder.TV_speed.setText(weatherModal.getTemperature().concat("Km/h"));
-        Picasso.get().load("http:".concat(weatherModal.getIcon())).into(holder.IV_condition);
+        holder.IV_condition.setImageAlpha(R.mipmap.ic_launcher);
+        //Picasso.get().load("http:".concat(weatherModal.getIcon())).into(holder.IV_condition);
 
         SimpleDateFormat in = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         SimpleDateFormat out = new SimpleDateFormat("hh:mm aa");

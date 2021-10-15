@@ -6,8 +6,11 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,11 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import solid.icon.myweather.room.AppDatabase;
-import solid.icon.myweather.room.CitiesList;
-import solid.icon.myweather.room.CitiesListDao;
 import solid.icon.myweather.room.RoomHelper;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<WeatherModal> weatherModalArrayList;
     private WeatherAdapter weatherAdapter;
     private String startCity = "kiev";
+    private Spinner spinner_city;
+    private int item_select = 0;
+    private String spinner_item = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,27 +52,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
         init();
-
-        if(hasConnection(this)) {
-            getWeatherName(startCity);
-            setCityName(startCity);
-        } else{
-
-        }
+        spinner_adapters();
 
         IV_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String cityName = ED_city_name.getText().toString().trim();
-                if(cityName.isEmpty()){
-                    weatherModalArrayList.clear();
-                    make_toast("Field city name is empty");
-                }else {
-                    getWeatherName(cityName);
-                    setCityName(cityName);
+                if(hasConnection(MainActivity.this)) {
+                    String cityName = ED_city_name.getText().toString().trim();
+                    if (cityName.isEmpty()) {
+                        weatherModalArrayList.clear();
+                        make_toast("Field city name is empty");
+                    } else {
+                        getWeatherName(cityName);
+                        setCityName(cityName);
+                    }
+                } else {
+                    make_toast("no internet connection");
                 }
             }
         });
+        ifHasConnection();
     }
 
     private void init(){
@@ -82,13 +83,58 @@ public class MainActivity extends AppCompatActivity {
         IV_background = findViewById(R.id.IV_background);
         IV_search = findViewById(R.id.IV_search);
         RV_weather = findViewById(R.id.RV_weather);
+        spinner_city = findViewById(R.id.spinner_city);
         weatherModalArrayList = new ArrayList<>();
         weatherAdapter = new WeatherAdapter(this, weatherModalArrayList);
         RV_weather.setAdapter(weatherAdapter);
-
     }
 
-    public static boolean hasConnection(final Context context) {
+    private void ifHasConnection(){
+        if(hasConnection(this)) {
+            Log.e("connection", "= yes");
+            getWeatherName(startCity);
+            setCityName(startCity);
+        } else{
+            Log.e("connection", "= no");
+            setWeatherInfo(startCity);
+        }
+    }
+
+    private void spinner_adapters() {
+        String[] city = new String[]{"Kiev", "Dnipropetrovsk"};
+        ArrayAdapter<String> adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, city);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_city.setAdapter(adapter);
+        AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                // Get the selected object
+                spinner_item = (String)parent.getItemAtPosition(position);
+                item_select = position;
+                Log.e("item_select = ", String.valueOf(item_select));
+                Log.e("spinner_item = ", spinner_item);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        };
+        spinner_city.setOnItemSelectedListener(itemSelectedListener);
+
+        spinner_city.setSelection(item_select);
+    }
+
+    private void setWeatherInfo(String cityName){
+        weatherModalArrayList.clear();
+        IV_background.setImageResource(R.drawable.day_night);
+        weatherModalArrayList = new RoomHelper().getAL_weatherModals(cityName);
+        weatherAdapter = new WeatherAdapter(this, weatherModalArrayList);
+        RV_weather.setAdapter(weatherAdapter);
+        weatherAdapter.notifyDataSetChanged();
+    }
+
+    private static boolean hasConnection(final Context context) {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (wifiInfo != null && wifiInfo.isConnected())
@@ -154,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                RoomHelper.toRoomDB(cityName, weatherModalArrayList);
+                new RoomHelper().toRoomDB(cityName, weatherModalArrayList);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -178,5 +224,4 @@ public class MainActivity extends AppCompatActivity {
     private void make_toast(String text){
         Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
     }
-
 }

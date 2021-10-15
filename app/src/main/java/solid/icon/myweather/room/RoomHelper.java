@@ -1,5 +1,7 @@
 package solid.icon.myweather.room;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,13 +10,13 @@ import solid.icon.myweather.WeatherModal;
 
 public class RoomHelper {
 
-    private static AppDatabase db = App.getInstance().getDatabase();
-    private static final CitiesListDao citiesListDao = db.dayLifeCycleDao();
+     AppDatabase db = App.getInstance().getDatabase();
+     final CitiesListDao citiesListDao = db.dayLifeCycleDao();
 
     public RoomHelper() {
     }
 
-    public static void toRoomDB(String cityName, ArrayList<WeatherModal> weatherModals){
+    public void toRoomDB(String cityName, ArrayList<WeatherModal> weatherModals){
         List<CitiesList> citiesListList = citiesListDao.getAll();
         boolean isCity = isCity(cityName, citiesListList);
 
@@ -30,29 +32,30 @@ public class RoomHelper {
             }
         } else {
             citiesListList = citiesListDao.getAllByCityName(cityName);
+            int iterator = 0;
             for(CitiesList c : citiesListList){
-                for(WeatherModal w : weatherModals){
-                    c.nameCity = cityName;
-                    c.time = w.getTime();
-                    c.temperature = w.getTemperature();
-                    c.wind = w.getWindSpeed();
-                    c.icon = w.getIcon();
-                    citiesListDao.update(c);
-                }
+                WeatherModal w = weatherModals.get(iterator);
+                c.time = w.getTime();
+                c.temperature = w.getTemperature();
+                c.wind = w.getWindSpeed();
+                c.icon = w.getIcon();
+                citiesListDao.update(c);
+                iterator++;
             }
         }
     }
 
-    public static ArrayList<WeatherModal> getAL_weatherModals(String cityName){
+    public ArrayList<WeatherModal> getAL_weatherModals(String cityName){
         List<CitiesList> citiesListList = citiesListDao.getAllByCityName(cityName);
         boolean isCity = isCity(cityName, citiesListList);
         ArrayList<WeatherModal> weatherModals = new ArrayList<>();
-        if(!isCity){
+        if(isCity){
             for(CitiesList citiesList : citiesListList){
                 String time = citiesList.time;
                 String temperature = citiesList.temperature;
                 String wind = citiesList.wind;
                 String icon = citiesList.icon;
+                Log.d("DATA", time + " --- " + temperature + " --- " + wind + " --- " + icon);
                 WeatherModal weatherModal = new WeatherModal(time, temperature, icon, wind);
                 weatherModals.add(weatherModal);
             }
@@ -60,7 +63,7 @@ public class RoomHelper {
         return weatherModals;
     }
 
-    private static boolean isCity(String cityName, List<CitiesList> citiesListList){
+    private boolean isCity(String cityName, List<CitiesList> citiesListList){
         boolean isCity = false;
         for(CitiesList c : citiesListList){
             if(c.nameCity.equals(cityName)){
