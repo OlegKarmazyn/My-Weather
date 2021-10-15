@@ -23,7 +23,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView RV_weather;
     private ArrayList<WeatherModal> weatherModalArrayList;
     private WeatherAdapter weatherAdapter;
+    private String startCity = "kiev";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +41,15 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         init();
 
+        getWeatherName(startCity);
+        setCityName(startCity);
+
         IV_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String cityName = ED_city_name.getText().toString().trim();
                 if(cityName.isEmpty()){
+                    weatherModalArrayList.clear();
                     make_toast("Field city name is empty");
                 }else {
                     getWeatherName(cityName);
