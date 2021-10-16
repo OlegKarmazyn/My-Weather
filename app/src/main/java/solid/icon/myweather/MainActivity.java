@@ -2,9 +2,11 @@ package solid.icon.myweather;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,6 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import solid.icon.myweather.room.CitiesListHelper;
+import solid.icon.myweather.room.SavedCitiesHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,12 +50,16 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinner_city;
     private int item_select = 0;
     private String spinner_item = "";
+    private SavedCitiesHelper savedCitiesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+
+        savedCitiesHelper = new SavedCitiesHelper();
+        savedCitiesHelper.addKiev_and_Dnipropetrovsk();
         init();
         spinner_adapters();
 
@@ -85,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     make_toast("City: " + city + " is added");
+                                    savedCitiesHelper.add_cityToRoomDB(city);
+                                    spinner_adapters();
                                 }
                             })
                             .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -99,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        ifHasConnection(startCity);
+        setInfo(startCity);
     }
 
     private void init(){
@@ -118,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         RV_weather.setAdapter(weatherAdapter);
     }
 
-    private void ifHasConnection(String cityName){
+    private void setInfo(String cityName){
         if(hasConnection(this)) {
             Log.e("connection", "= yes");
             getWeatherName(cityName);
@@ -130,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void spinner_adapters() {
-        String[] city = new String[]{"Kiev", "Dnipropetrovsk"};
+        String[] city = savedCitiesHelper.getArrayCities();
         ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.spinner_item, city);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_city.setAdapter(adapter);
@@ -143,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 item_select = position;
                 Log.e("item_select = ", String.valueOf(item_select));
                 Log.e("spinner_item = ", spinner_item);
-                ifHasConnection(spinner_item);
+                setInfo(spinner_item);
                 RV_weather.scrollToPosition(10);
             }
 
@@ -163,6 +172,21 @@ public class MainActivity extends AppCompatActivity {
         weatherAdapter = new WeatherAdapter(this, weatherModalArrayList);
         RV_weather.setAdapter(weatherAdapter);
         weatherAdapter.notifyDataSetChanged();
+        TV_city_name.setText(cityName);
+        TV_condition.setText(get_preferences_condition(cityName));
+        TV_temperature.setText(new CitiesListHelper().getCurrentTemperature(cityName));
+    }
+
+    private void set_preferences_condition(String cityName, String condition){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(cityName,condition);
+        editor.apply();
+    }
+
+    private String get_preferences_condition(String cityName){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return preferences.getString(cityName, "");
     }
 
     private static boolean hasConnection(final Context context) {
@@ -203,6 +227,8 @@ public class MainActivity extends AppCompatActivity {
                     int is_day = currentJSONObject.getInt("is_day");
                     String condition = currentJSONObject.getJSONObject("condition").getString("text");
                     String conditionIcon = currentJSONObject.getJSONObject("condition").getString("icon");
+
+                    set_preferences_condition(cityName, condition);
 
                     TV_temperature.setText(temperature.concat("℃"));
                     TV_condition.setText(condition);
@@ -247,8 +273,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setCityName(String cityName){
-        String upCity = "";
-        upCity = cityName.substring(0, 1).toUpperCase() + cityName.substring(1);
+        String upCity = cityName.substring(0, 1).toUpperCase() + cityName.substring(1);
         TV_city_name.setText(upCity);
     }
 

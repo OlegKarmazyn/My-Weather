@@ -2,7 +2,10 @@ package solid.icon.myweather.room;
 
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import solid.icon.myweather.App;
@@ -72,5 +75,26 @@ public class CitiesListHelper {
             }
         }
         return isCity;
+    }
+
+    public String getCurrentTemperature(String cityName){
+        List<CitiesList> citiesListList = citiesListDao.getAllByCityName(cityName);
+        for(int iterator = 0; iterator < citiesListList.size(); iterator++) {
+            SimpleDateFormat in = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            SimpleDateFormat out = new SimpleDateFormat("hh:mm aa");
+            try {
+                Date currentDate = new Date();
+                Log.e("DATE = ", String.valueOf(currentDate));
+                Date startDate = in.parse(citiesListList.get(iterator).time);
+                Log.e("DATE 2 = ", String.valueOf(citiesListList.get(iterator).time));
+                Date endDate = in.parse(citiesListList.get(iterator + 1).time);
+                if (currentDate.after(startDate) && currentDate.before(endDate)) {
+                    return citiesListList.get(iterator+3).temperature; //time Zone (+3)
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
     }
 }

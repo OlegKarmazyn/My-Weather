@@ -13,17 +13,22 @@ public class SavedCitiesHelper {
     }
 
     public void addKiev_and_Dnipropetrovsk(){
+        String kiev = "Kiev";
+        String dnipropetrovsk = "Dnipropetrovsk";
         SavedCities savedCitiesKiev = new SavedCities();
         SavedCities savedCitiesDnipropetrovsk = new SavedCities();
-        savedCitiesKiev.nameCity = "Kiev";
-        savedCitiesDnipropetrovsk.nameCity = "Dnipropetrovsk";
-        savedCitiesDao.insert(savedCitiesKiev);
-        savedCitiesDao.insert(savedCitiesDnipropetrovsk);
+        savedCitiesKiev.nameCity = kiev;
+        savedCitiesDnipropetrovsk.nameCity = dnipropetrovsk;
+        if(!isCity(kiev)) {
+            savedCitiesDao.insert(savedCitiesKiev);
+        }
+        if(!isCity(dnipropetrovsk)) {
+            savedCitiesDao.insert(savedCitiesDnipropetrovsk);
+        }
     }
 
     public void add_cityToRoomDB(String cityName){
-        List<SavedCities> savedCitiesList = savedCitiesDao.getAll();
-        if(isCity(cityName, savedCitiesList)){
+        if(!isCity(cityName)){
             SavedCities savedCities = new SavedCities();
             savedCities.nameCity = cityName;
             savedCitiesDao.insert(savedCities);
@@ -31,17 +36,18 @@ public class SavedCitiesHelper {
     }
 
     public String[] getArrayCities(){
-        String[] arrayCities = new String[]{};
         List<SavedCities> savedCitiesList = savedCitiesDao.getAll();
+        String[] arrayCities = new String[savedCitiesList.size()];
         for(int iterator = 0; iterator < savedCitiesList.size(); iterator++){
             arrayCities[iterator] = savedCitiesList.get(iterator).nameCity;
         }
         return arrayCities;
     }
 
-    private boolean isCity(String cityName, List<SavedCities> savedCities){
+    private boolean isCity(String cityName){
+        List<SavedCities> savedCitiesList = savedCitiesDao.getAll();
         boolean isCity = false;
-        for(SavedCities c : savedCities){
+        for(SavedCities c : savedCitiesList){
             if(c.nameCity.equals(cityName)){
                 isCity = true;
                 break;
