@@ -1,4 +1,4 @@
-package solid.icon.myweather;
+package solid.icon.myweather.weather_adapter;
 
 public class WeatherModal {
 

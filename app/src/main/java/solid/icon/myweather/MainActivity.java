@@ -27,6 +27,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -37,6 +39,8 @@ import java.util.ArrayList;
 
 import solid.icon.myweather.room.CitiesListHelper;
 import solid.icon.myweather.room.SavedCitiesHelper;
+import solid.icon.myweather.weather_adapter.WeatherAdapter;
+import solid.icon.myweather.weather_adapter.WeatherModal;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -135,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         } else{
             Log.e("connection", "= no");
             setWeatherInfo(cityName);
+            make_toast("no internet connection");
         }
     }
 
@@ -146,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
         AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
                 // Get the selected object
                 spinner_item = (String)parent.getItemAtPosition(position);
                 item_select = position;
@@ -174,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         weatherAdapter.notifyDataSetChanged();
         TV_city_name.setText(cityName);
         TV_condition.setText(get_preferences_condition(cityName));
-        TV_temperature.setText(new CitiesListHelper().getCurrentTemperature(cityName));
+        TV_temperature.setText(new CitiesListHelper().getCurrentTemperature(cityName).concat("℃"));
     }
 
     private void set_preferences_condition(String cityName, String condition){
@@ -265,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("ERROR", error.toString());
                 make_toast("Pls enter valid city name!");
                 TV_city_name.setText("wrong city name");
+                TV_condition.setText("");
                 weatherModalArrayList.clear();
             }
         });

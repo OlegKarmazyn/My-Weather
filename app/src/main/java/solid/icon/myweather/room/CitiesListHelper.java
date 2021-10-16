@@ -2,14 +2,13 @@ package solid.icon.myweather.room;
 
 import android.util.Log;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import solid.icon.myweather.App;
-import solid.icon.myweather.WeatherModal;
+import solid.icon.myweather.weather_adapter.WeatherModal;
 
 public class CitiesListHelper {
 
@@ -81,7 +80,6 @@ public class CitiesListHelper {
         List<CitiesList> citiesListList = citiesListDao.getAllByCityName(cityName);
         for(int iterator = 0; iterator < citiesListList.size(); iterator++) {
             SimpleDateFormat in = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-            SimpleDateFormat out = new SimpleDateFormat("hh:mm aa");
             try {
                 Date currentDate = new Date();
                 Log.e("DATE = ", String.valueOf(currentDate));

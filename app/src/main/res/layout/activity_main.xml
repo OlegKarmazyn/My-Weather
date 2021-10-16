@@ -86,7 +86,7 @@
         android:layout_below="@+id/TV_city_name"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:text="29"
+        android:text="29℃"
         android:textColor="@color/white"
         android:textSize="60sp" />
 

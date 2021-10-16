@@ -1,4 +1,4 @@
-package solid.icon.myweather;
+package solid.icon.myweather.weather_adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -20,6 +20,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import solid.icon.myweather.R;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHolder> {
 
