@@ -44,7 +44,7 @@ import solid.icon.myweather.weather_adapter.WeatherModal;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView TV_city_name, TV_temperature, TV_condition;
+    private TextView TV_city_name, TV_temperature, TV_condition, TV_forecast;
     private EditText ED_city_name;
     private ImageView IV_condition, IV_background, IV_search, IV_add_city;
     private RecyclerView RV_weather;
@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         ED_city_name = findViewById(R.id.ED_city_name);
         IV_condition = findViewById(R.id.IV_condition);
         IV_background = findViewById(R.id.IV_background);
+        TV_forecast = findViewById(R.id.TV_forecast);
         IV_search = findViewById(R.id.IV_search);
         IV_add_city = findViewById(R.id.IV_add_city);
         RV_weather = findViewById(R.id.RV_weather);
@@ -136,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
             Log.e("connection", "= yes");
             getWeatherName(cityName);
             setCityName(cityName);
+            IV_condition.setVisibility(View.VISIBLE);
+            TV_forecast.setVisibility(View.VISIBLE);
         } else{
             Log.e("connection", "= no");
             setWeatherInfo(cityName);
@@ -271,10 +274,20 @@ public class MainActivity extends AppCompatActivity {
                 TV_city_name.setText("wrong city name");
                 TV_condition.setText("");
                 weatherModalArrayList.clear();
+                wrongCityName();
             }
         });
 
         requestQueue.add(jsonObjectRequest);
+    }
+
+    private void wrongCityName(){
+        TV_temperature.setText("");
+        TV_condition.setText("");
+        weatherModalArrayList.clear();
+        weatherAdapter.notifyDataSetChanged();
+        IV_condition.setVisibility(View.GONE);
+        TV_forecast.setVisibility(View.GONE);
     }
 
     private void setCityName(String cityName){
