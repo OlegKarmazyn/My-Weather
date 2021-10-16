@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("item_select = ", String.valueOf(item_select));
                 Log.e("spinner_item = ", spinner_item);
                 setInfo(spinner_item);
-                RV_weather.scrollToPosition(10);
+                //RV_weather.scrollToPosition(10);
             }
 
             @Override

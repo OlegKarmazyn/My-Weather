@@ -25,18 +25,20 @@
 
         <EditText
             android:id="@+id/ED_city_name"
-            android:layout_width="200dp"
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:background="@android:color/transparent"
             android:hint="@string/enter_city_name"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/IV_search"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="0.1"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="5dp"
@@ -45,14 +47,16 @@
 
         <Spinner
             android:id="@+id/spinner_city"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:layout_marginLeft="5dp" />
 
         <ImageView
             android:id="@+id/IV_add_city"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="0.1"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="5dp"

@@ -1,6 +1,7 @@
 package solid.icon.myweather;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -39,11 +43,41 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
         WeatherModal weatherModal = weatherModals.get(position);
 
+        String url = "http:".concat(weatherModal.getIcon());
+
         holder.TV_temperature.setText(weatherModal.getTemperature().concat("℃"));
         holder.TV_speed.setText(weatherModal.getTemperature().concat("Km/h"));
-        holder.IV_condition.setImageAlpha(R.mipmap.ic_launcher);
 
-        //Picasso.get().load("http:".concat(weatherModal.getIcon())).into(holder.IV_condition);
+//        Picasso.get()
+//                .load(url)
+//                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+//                .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
+//                .error(R.mipmap.ic_launcher)
+//                .into(holder.IV_condition);
+        Picasso.get()
+                .load(url)
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .into(holder.IV_condition, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+                    @Override
+                    public void onError(Exception e) {
+                        Picasso.get().load(url).networkPolicy(NetworkPolicy.NO_CACHE)
+                                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).error(R.mipmap.ic_launcher)
+                                .into(holder.IV_condition, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.v("Picasso","fetch image success in try again.");
+                                    }
+                                    @Override
+                                    public void onError(Exception e) {
+                                        Log.v("Picasso","Could not fetch image again...");
+                                    }
+                                });
+                    }
+                });
 
         SimpleDateFormat in = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         SimpleDateFormat out = new SimpleDateFormat("hh:mm aa");
