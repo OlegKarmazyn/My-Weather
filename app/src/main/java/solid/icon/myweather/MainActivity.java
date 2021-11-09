@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView weather_recycleView;
     private ArrayList<WeatherModal> weatherModalArrayList;
     private WeatherAdapter weatherAdapter;
-    private String startCity = getResources().getString(R.string.first_main_city);
+    private String startCity;
     private Spinner city_spinner;
     private int item_select = 0;
     private String spinner_item = "";
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         savedCitiesHelper = new SavedCitiesHelper(this);
         savedCitiesHelper.addKiev_and_Dnipropetrovsk();
+        startCity = getResources().getString(R.string.first_main_city);
         init();
         spinner_adapters();
 
