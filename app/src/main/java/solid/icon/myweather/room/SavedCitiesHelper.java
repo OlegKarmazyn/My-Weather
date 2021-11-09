@@ -1,29 +1,34 @@
 package solid.icon.myweather.room;
 
+import android.content.Context;
+
 import java.util.List;
 
 import solid.icon.myweather.App;
+import solid.icon.myweather.R;
 
 public class SavedCitiesHelper {
 
      private AppDatabase db = App.getInstance().getDatabase();
      private final SavedCitiesDao savedCitiesDao = db.savedCitiesDao();
+     private Context context;
 
-    public SavedCitiesHelper() {
+    public SavedCitiesHelper(Context context) {
+        this.context = context;
     }
 
     public void addKiev_and_Dnipropetrovsk(){
-        String kiev = "Kiev";
-        String dnipropetrovsk = "Dnipropetrovsk";
-        SavedCities savedCitiesKiev = new SavedCities();
-        SavedCities savedCitiesDnipropetrovsk = new SavedCities();
-        savedCitiesKiev.nameCity = kiev;
-        savedCitiesDnipropetrovsk.nameCity = dnipropetrovsk;
-        if(!isCity(kiev)) {
-            savedCitiesDao.insert(savedCitiesKiev);
+        String first_main_city = context.getResources().getString(R.string.first_main_city);
+        String second_main_city = context.getResources().getString(R.string.second_main_city);
+        SavedCities savedFirstCity = new SavedCities();
+        SavedCities savedSecondCity = new SavedCities();
+        savedFirstCity.nameCity = first_main_city;
+        savedSecondCity.nameCity = second_main_city;
+        if(!isCity(first_main_city)) {
+            savedCitiesDao.insert(savedFirstCity);
         }
-        if(!isCity(dnipropetrovsk)) {
-            savedCitiesDao.insert(savedCitiesDnipropetrovsk);
+        if(!isCity(second_main_city)) {
+            savedCitiesDao.insert(savedSecondCity);
         }
     }
 

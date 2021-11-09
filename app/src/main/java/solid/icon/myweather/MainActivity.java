@@ -27,8 +27,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -44,14 +42,17 @@ import solid.icon.myweather.weather_adapter.WeatherModal;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView TV_city_name, TV_temperature, TV_condition, TV_forecast;
-    private EditText ED_city_name;
-    private ImageView IV_condition, IV_background, IV_search, IV_add_city;
-    private RecyclerView RV_weather;
+    public final static String TEMP_VALUE = "℃";
+    public final static String SPEED_VALUE = "Km/h";
+
+    private TextView city_name_text, temperature_text, condition_text, forecast_text;
+    private EditText city_name_edit;
+    private ImageView condition_image, background_image, search_icon, add_city_icon;
+    private RecyclerView weather_recycleView;
     private ArrayList<WeatherModal> weatherModalArrayList;
     private WeatherAdapter weatherAdapter;
-    private String startCity = "kiev";
-    private Spinner spinner_city;
+    private String startCity = getResources().getString(R.string.first_main_city);
+    private Spinner city_spinner;
     private int item_select = 0;
     private String spinner_item = "";
     private SavedCitiesHelper savedCitiesHelper;
@@ -62,16 +63,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        savedCitiesHelper = new SavedCitiesHelper();
+        savedCitiesHelper = new SavedCitiesHelper(this);
         savedCitiesHelper.addKiev_and_Dnipropetrovsk();
         init();
         spinner_adapters();
 
-        IV_search.setOnClickListener(new View.OnClickListener() {
+        search_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(hasConnection(MainActivity.this)) {
-                    String cityName = ED_city_name.getText().toString().trim();
+                    String cityName = city_name_edit.getText().toString().trim();
                     if (cityName.isEmpty()) {
                         weatherModalArrayList.clear();
                         make_toast("Field city name is empty");
@@ -85,10 +86,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        IV_add_city.setOnClickListener(new View.OnClickListener() {
+        add_city_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String city = ED_city_name.getText().toString().trim();
+                String city = city_name_edit.getText().toString().trim();
                 if(!city.isEmpty()) {
                     new AlertDialog.Builder(MainActivity.this)
                             .setTitle("Add city")
@@ -116,20 +117,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init(){
-        TV_city_name = findViewById(R.id.TV_city_name);
-        TV_temperature = findViewById(R.id.TV_temperature);
-        TV_condition = findViewById(R.id.TV_condition);
-        ED_city_name = findViewById(R.id.ED_city_name);
-        IV_condition = findViewById(R.id.IV_condition);
-        IV_background = findViewById(R.id.IV_background);
-        TV_forecast = findViewById(R.id.TV_forecast);
-        IV_search = findViewById(R.id.IV_search);
-        IV_add_city = findViewById(R.id.IV_add_city);
-        RV_weather = findViewById(R.id.RV_weather);
-        spinner_city = findViewById(R.id.spinner_city);
+        city_name_text = findViewById(R.id.city_name_text);
+        temperature_text = findViewById(R.id.temperature_text);
+        condition_text = findViewById(R.id.condition_text);
+        city_name_edit = findViewById(R.id.city_name_edit);
+        condition_image = findViewById(R.id.condition_image);
+        background_image = findViewById(R.id.background_image);
+        forecast_text = findViewById(R.id.forecast_text);
+        search_icon = findViewById(R.id.search_icon);
+        add_city_icon = findViewById(R.id.add_city_icon);
+        weather_recycleView = findViewById(R.id.weather_recyclerView);
+        city_spinner = findViewById(R.id.city_spinner);
         weatherModalArrayList = new ArrayList<>();
         weatherAdapter = new WeatherAdapter(this, weatherModalArrayList);
-        RV_weather.setAdapter(weatherAdapter);
+        weather_recycleView.setAdapter(weatherAdapter);
     }
 
     private void setInfo(String cityName){
@@ -137,8 +138,8 @@ public class MainActivity extends AppCompatActivity {
             Log.e("connection", "= yes");
             getWeatherName(cityName);
             setCityName(cityName);
-            IV_condition.setVisibility(View.VISIBLE);
-            TV_forecast.setVisibility(View.VISIBLE);
+            condition_image.setVisibility(View.VISIBLE);
+            forecast_text.setVisibility(View.VISIBLE);
         } else{
             Log.e("connection", "= no");
             setWeatherInfo(cityName);
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         String[] city = savedCitiesHelper.getArrayCities();
         ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.spinner_item, city);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_city.setAdapter(adapter);
+        city_spinner.setAdapter(adapter);
         AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -160,28 +161,28 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("item_select = ", String.valueOf(item_select));
                 Log.e("spinner_item = ", spinner_item);
                 setInfo(spinner_item);
-                //RV_weather.scrollToPosition(10);
+                //weather_recycleView.scrollToPosition(10);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         };
-        spinner_city.setOnItemSelectedListener(itemSelectedListener);
+        city_spinner.setOnItemSelectedListener(itemSelectedListener);
 
-        spinner_city.setSelection(item_select);
+        city_spinner.setSelection(item_select);
     }
 
     private void setWeatherInfo(String cityName){
         weatherModalArrayList.clear();
-        IV_background.setImageResource(R.drawable.day_night);
+        background_image.setImageResource(R.drawable.day_night);
         weatherModalArrayList = new CitiesListHelper().getAL_weatherModals(cityName);
         weatherAdapter = new WeatherAdapter(this, weatherModalArrayList);
-        RV_weather.setAdapter(weatherAdapter);
+        weather_recycleView.setAdapter(weatherAdapter);
         weatherAdapter.notifyDataSetChanged();
-        TV_city_name.setText(cityName);
-        TV_condition.setText(get_preferences_condition(cityName));
-        TV_temperature.setText(new CitiesListHelper().getCurrentTemperature(cityName).concat("℃"));
+        city_name_text.setText(cityName);
+        condition_text.setText(get_preferences_condition(cityName));
+        temperature_text.setText(new CitiesListHelper().getCurrentTemperature(cityName).concat(TEMP_VALUE));
     }
 
     private void set_preferences_condition(String cityName, String condition){
@@ -237,14 +238,14 @@ public class MainActivity extends AppCompatActivity {
 
                     set_preferences_condition(cityName, condition);
 
-                    TV_temperature.setText(temperature.concat("℃"));
-                    TV_condition.setText(condition);
-                    Picasso.get().load("http:".concat(conditionIcon)).into(IV_condition);
+                    temperature_text.setText(temperature.concat(TEMP_VALUE));
+                    condition_text.setText(condition);
+                    Picasso.get().load("http:".concat(conditionIcon)).into(condition_image);
 
                     if(is_day == 1){
-                        Picasso.get().load(urlDayIcon).into(IV_background);
+                        Picasso.get().load(urlDayIcon).into(background_image);
                     }else {
-                        Picasso.get().load(urlNightIcon).into(IV_background);
+                        Picasso.get().load(urlNightIcon).into(background_image);
                     }
 
                     JSONObject forecastObject = response.getJSONObject("forecast").getJSONArray("forecastday").getJSONObject(0);
@@ -271,8 +272,8 @@ public class MainActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("ERROR", error.toString());
                 make_toast("Pls enter valid city name!");
-                TV_city_name.setText("wrong city name");
-                TV_condition.setText("");
+                city_name_text.setText("wrong city name");
+                condition_text.setText("");
                 weatherModalArrayList.clear();
                 wrongCityName();
             }
@@ -282,17 +283,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void wrongCityName(){
-        TV_temperature.setText("");
-        TV_condition.setText("");
+        temperature_text.setText("");
+        condition_text.setText("");
         weatherModalArrayList.clear();
         weatherAdapter.notifyDataSetChanged();
-        IV_condition.setVisibility(View.GONE);
-        TV_forecast.setVisibility(View.GONE);
+        condition_image.setVisibility(View.GONE);
+        forecast_text.setVisibility(View.GONE);
     }
 
     private void setCityName(String cityName){
         String upCity = cityName.substring(0, 1).toUpperCase() + cityName.substring(1);
-        TV_city_name.setText(upCity);
+        city_name_text.setText(upCity);
     }
 
     private void make_toast(String text){

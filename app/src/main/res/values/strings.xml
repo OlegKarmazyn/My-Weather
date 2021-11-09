@@ -3,4 +3,7 @@
     <string name="city_name">City Name</string>
     <string name="enter_city_name">Enter city name</string>
     <string name="today_s_weather_forecast">Today`s Weather Forecast</string>
+
+    <string name="first_main_city">Kiev</string>
+    <string name="second_main_city">Dnipropetrovsk</string>
 </resources>

@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import solid.icon.myweather.MainActivity;
 import solid.icon.myweather.R;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHolder> {
@@ -45,21 +46,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
         WeatherModal weatherModal = weatherModals.get(position);
 
+        holder.temperature_text.setText(weatherModal.getTemperature().concat(MainActivity.TEMP_VALUE));
+        holder.speed_text.setText(weatherModal.getWindSpeed().concat(MainActivity.SPEED_VALUE));
+
         String url = "http:".concat(weatherModal.getIcon());
-
-        holder.TV_temperature.setText(weatherModal.getTemperature().concat("℃"));
-        holder.TV_speed.setText(weatherModal.getTemperature().concat("Km/h"));
-
-//        Picasso.get()
-//                .load(url)
-//                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-//                .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
-//                .error(R.mipmap.ic_launcher)
-//                .into(holder.IV_condition);
         Picasso.get()
                 .load(url)
                 .networkPolicy(NetworkPolicy.OFFLINE)
-                .into(holder.IV_condition, new Callback() {
+                .into(holder.condition_image, new Callback() {
                     @Override
                     public void onSuccess() {
 
@@ -68,7 +62,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
                     public void onError(Exception e) {
                         Picasso.get().load(url).networkPolicy(NetworkPolicy.NO_CACHE)
                                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).error(R.mipmap.ic_launcher)
-                                .into(holder.IV_condition, new Callback() {
+                                .into(holder.condition_image, new Callback() {
                                     @Override
                                     public void onSuccess() {
                                         Log.v("Picasso","fetch image success in try again.");
@@ -85,7 +79,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
         SimpleDateFormat out = new SimpleDateFormat("hh:mm aa");
         try {
             Date date = in.parse(weatherModal.getTime());
-            holder.TV_time.setText(out.format(date));
+            holder.time_text.setText(out.format(date));
         }catch (ParseException e){
 
         }
@@ -97,15 +91,15 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView TV_time, TV_temperature, TV_speed;
-        private ImageView IV_condition;
+        private TextView time_text, temperature_text, speed_text;
+        private ImageView condition_image;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            TV_time = itemView.findViewById(R.id.TV_time);
-            TV_temperature = itemView.findViewById(R.id.TV_temperature);
-            TV_speed = itemView.findViewById(R.id.TV_speed);
-            IV_condition = itemView.findViewById(R.id.IV_condition);
+            time_text = itemView.findViewById(R.id.time_text);
+            temperature_text = itemView.findViewById(R.id.temperature_text);
+            speed_text = itemView.findViewById(R.id.speed_text);
+            condition_image = itemView.findViewById(R.id.condition_image);
         }
     }
 }

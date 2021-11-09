@@ -15,7 +15,7 @@
         android:background="@drawable/card_back">
 
         <TextView
-            android:id="@+id/TV_time"
+            android:id="@+id/time_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -25,10 +25,10 @@
             android:textColor="@color/white" />
 
         <TextView
-            android:id="@+id/TV_temperature"
+            android:id="@+id/temperature_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/TV_time"
+            android:layout_below="@+id/time_text"
             android:gravity="center"
             android:text="20"
             android:textAlignment="center"
@@ -38,8 +38,8 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:id="@+id/IV_condition"
-            android:layout_below="@+id/TV_temperature"
+            android:id="@+id/condition_image"
+            android:layout_below="@+id/temperature_text"
             android:src="@mipmap/ic_launcher"
             android:layout_centerHorizontal="true"
             android:padding="4dp"
@@ -48,8 +48,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/TV_speed"
-            android:layout_below="@+id/IV_condition"
+            android:id="@+id/speed_text"
+            android:layout_below="@+id/condition_image"
             android:textColor="@color/white"
             android:padding="3dp"
             android:textAlignment="center"
